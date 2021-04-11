@@ -49,30 +49,6 @@ const size_t a_start      = delta_start +N-1;
 
 
 
-// vector<double> forward_dynamics(const vector<double> state, const vector<double> input, const double dt){
-//   // Initial state.
-//   const double x0 = state[0];
-//   const double y0 = state[1];
-//   const double psi0 = state[2];
-//   const double v = state[3];
-//   const double cte0 = state[4];
-//   const double epsi0 = state[5];
-//   const double a = input[0];
-//   const double delta = input[1;
-  
-//   size_t nvars = state.size();
-//   vector<double> state_next(nvars);
-//   state_next[0] = x0 + ( v * cos(psi0) * dt );
-//   state_next[1] = y0 + ( v * sin(psi0) * dt );
-//   state_next[2] = psi0 - ( v * delta * dt / Lf );
-//   state_next[3] = v + a * dt;
-//   state_next[4] = cte0 + v * sin(epsi0) * dt;
-//   state_next[5] = epsi0 - v * atan(coeffs[1]) * delay / Lf;
-
-
-//   return state_next;
-// }
-
 class FG_eval {
  public:
   // Fitted polynomial coefficients
@@ -177,10 +153,10 @@ class FG_eval {
       // Constraints
       fg[1 + x_start + t]     = x1 - (x0 + v0 * CppAD::cos(psi0) * dt);
       fg[1 + y_start + t]     = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
-      fg[1 + psi_start + t]   = psi1 - (psi0 - v0 / Lf * delta0 * dt);
+      fg[1 + psi_start + t]   = psi1 - (psi0 + v0 / Lf * delta0 * dt);
       fg[1 + v_start + t]     = v1 - (v0 + a0 * dt);
       fg[1 + cte_start + t]   = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));
-      fg[1 + epsi_start + t]  = epsi1 - ((psi0 - psides0) - v0 / Lf * delta0 * dt);
+      fg[1 + epsi_start + t]  = epsi1 - ((psi0 - psides0) + v0 / Lf * delta0 * dt);
     }
     return;
   }

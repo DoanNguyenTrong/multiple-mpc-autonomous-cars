@@ -78,7 +78,7 @@ int main(int argc, char ** argv) {
           double          a     = j[1]["throttle"];
 
           
-          std::cout << "Current state: {" << px << "," << py << "," << psi << "," << v << delta << "," << a << "}" << std::endl;
+          std::cout << "Current state: {x=" << px << ",y=" << py << ",psi=" << psi << ",v=" << v << ",delta="<< delta << ",a=" << a << "}" << std::endl;
           
           // ------------------------------------------------------
           //
@@ -112,24 +112,22 @@ int main(int argc, char ** argv) {
 
 
           const double delay = .1;
-
-          // Initial state
+          delta = - delta;
+          // state[t]
           const double x0 = 0;
           const double y0 = 0;
           const double psi0 = 0;
           const double cte0 = coeffs[0];
           const double epsi0 = -atan(coeffs[1]);
-          const vector<double> state_current = {0,0,0,v, coeffs[0], -atan(coeffs[1])};
-          const vector<double> input_previos = {a, delta};
           
 
-          // Foward -> t + delay
-          double x_delay = x0 + v* cos(psi0) * delay;
-          double y_delay = y0 + v* sin(psi0) * delay;
-          double psi_delay = psi0 - v* delta * delay/ Lf; 
-          double v_delay = v + a* delay;
-          double cte_delay = cte0 + v * sin(epsi0) * delay;
-          double epsi_delay = epsi0 - v * atan(coeffs[1]) * delay/ Lf;
+          // Foward -> state[t + delay]
+          double x_delay    = x0 + v* cos(psi0) * delay;
+          double y_delay    = y0 + v* sin(psi0) * delay;
+          double psi_delay  = psi0 + v * delta * delay/ Lf; 
+          double v_delay    = v + a* delay;
+          double cte_delay  = cte0 + v * sin(epsi0) * delay;
+          double epsi_delay = epsi0 + v * delta * delay/ Lf;
 
           VectorXd state(6);
           state << x_delay, y_delay, psi_delay, v_delay, cte_delay, epsi_delay;
@@ -140,9 +138,9 @@ int main(int argc, char ** argv) {
            * TODO: Calculate steering angle and throttle using MPC.
            * Both are in between [-1, 1].
            */
-          double steer_value = vars[0]/deg2rad(25);
+          double steer_value = -vars[0]/deg2rad(25);
           double throttle_value = vars[1];
-          std::cout << "Control: {" << vars[0] << "," << vars[1] << "}\n";
+          std::cout << "Control: {delta=" << -vars[0]/deg2rad(25) << ", a=" << vars[1] << "}\n";
           // ------------------------------------------------------
           //
           //      PREPARE JSON MSG -> CONTROL THE CAR
