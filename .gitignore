@@ -1,0 +1,9 @@
+.vscode/
+tags/
+.editorconfig
+.DS_Store
+
+
+simulator/
+references/
+*/build/
